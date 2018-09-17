@@ -1,0 +1,44 @@
+{
+  "name": "Post",
+  "plural": "posts",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string",
+      "required": true
+    },
+    "publishedAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "postCategories": {
+      "type": "hasMany",
+      "model": "PostCategory",
+      "foreignKey": "postId"
+    },
+    "comments": {
+      "type": "hasMany",
+      "model": "Comment",
+      "foreignKey": "postId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

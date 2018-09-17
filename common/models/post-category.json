@@ -1,0 +1,34 @@
+{
+  "name": "PostCategory",
+  "plural": "post-categories",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "postId": {
+      "type": "number",
+      "required": true
+    },
+    "categoryId": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "categoryId"
+    },
+    "post": {
+      "type": "belongsTo",
+      "model": "Post",
+      "foreignKey": "postId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

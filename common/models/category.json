@@ -1,0 +1,32 @@
+{
+  "name": "Category",
+  "plural": "categories",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "postCategories": {
+      "type": "hasMany",
+      "model": "PostCategory",
+      "foreignKey": "categoryId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
