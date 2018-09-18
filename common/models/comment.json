@@ -18,6 +18,12 @@
     "content": {
       "type": "string",
       "required": true
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "modifiedAt": {
+      "type": "date"
     }
   },
   "validations": [],

@@ -14,41 +14,41 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "MySQL"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": false
   },
   "Category": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": true
   },
   "Post": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": true
   },
   "PostCategory": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": true
   },
   "Comment": {
-    "dataSource": "db",
+    "dataSource": "MySQL",
     "public": true
   }
 }

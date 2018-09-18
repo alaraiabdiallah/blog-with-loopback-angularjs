@@ -24,6 +24,12 @@
     },
     "publishedAt": {
       "type": "date"
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "modifiedAt": {
+      "type": "date"
     }
   },
   "validations": [],
