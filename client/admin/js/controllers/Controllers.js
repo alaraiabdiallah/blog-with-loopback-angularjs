@@ -13,7 +13,7 @@ angular.module('app')
     $scope.datasTemp = [];
     $scope.paging = {
         hasPaging: false,
-        perPage: 2,
+        perPage: 10,
         totalData: 0,
         currentPos: 0,
         totalPage: 0,
@@ -83,7 +83,7 @@ angular.module('app')
     }
 
     $scope.loadData = (reset = false) => {
-      var endpoint = '/api/categories?filter[limit]=' + $scope.paging.perPage + '&filter[skip]=' + $scope.paging.currentPos;
+      var endpoint = '/api/categories?filter[limit]=' + $scope.paging.perPage + '&filter[skip]=' + $scope.paging.currentPos + '&filter[order]=id DESC';
       $http.get(endpoint)
         .then((res) => {
             if (reset) {
