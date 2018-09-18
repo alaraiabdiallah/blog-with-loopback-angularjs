@@ -9,7 +9,18 @@
         <div class="col-lg-4">
           <div class="form-group no-margin">
             <label>Search</label>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" ng-change="search()" ng-model="searchKeyword">
+            <p class="help-block">{{ searchMsg }}</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group no-margin">
+            <label>Sort By</label>
+            <select class="form-control" ng-model="orderMethod">
+              <option value="-id">Newest</option>
+              <option value="id">Older</option>
+            </select>
+            <p class="help-block"></p>
           </div>
         </div>
       </div>
@@ -32,7 +43,7 @@
         <p class="text-center"><strong>No data</strong></p>
     </div>
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="category in datas">
+        <li class="list-group-item" ng-repeat="category in datas | orderBy:orderMethod">
             <h3 class="list-title">{{ category.name }}</h3>
             <div class="list-action">
                 <a ng-click="edit(category.id)">Edit</a> |
@@ -41,7 +52,7 @@
         </li>
     </ul>
     <!-- /.box-body -->
-    <div class="box-footer text-center" ng-show="paging.hasPaging">
+    <div class="box-footer text-center" ng-show="paging.hasPaging && datas.length > 0">
       <button class="btn btn-primary" ng-click="loadData()">Load More</button>
     </div>
     <!-- /.box-footer-->

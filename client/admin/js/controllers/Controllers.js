@@ -8,6 +8,9 @@ angular.module('app')
     var modalContext = $('#categoryModal');
     
     $scope.datas = [];
+    $scope.searchKeyword = '';
+    $scope.searchMsg = '';
+    $scope.datasTemp = [];
     $scope.paging = {
         hasPaging: false,
         perPage: 10,
@@ -16,10 +19,13 @@ angular.module('app')
         totalPage: 0,
         currentPage: 0
     }
+    $scope.orderMethod = '-id';
     $scope.actionTitle = '';
     $scope.action = '';
-
     $scope.form = {id: 0,name: '',slug: '',description:''};
+    
+    $scope.mainEndpoint =  '/api/categories?filter[limit]=' + $scope.paging.perPage + '&filter[skip]=' + $scope.paging.currentPos;
+    
     let initPaging = () => {
         Category.count().$promise.then(res => {
             $scope.paging.totalData = res.count;
@@ -57,25 +63,38 @@ angular.module('app')
       })
     }
 
-    
+    let pagingReset = () =>{
+        $scope.paging = {
+          hasPaging: false,
+          perPage: 10,
+          totalData: 0,
+          currentPos: 0,
+          totalPage: 0,
+          currentPage: 0
+        }
+    }
 
     $scope.init = () => {
         initPaging();
         $scope.loadData();
     }
 
-
-    $scope.loadData = () => {
-      $http.get('/api/categories?filter[limit]=' + $scope.paging.perPage + '&filter[skip]=' + $scope.paging.currentPos)
+    $scope.loadData = (reset = false) => {
+      
+      $http.get($scope.mainEndpoint)
         .then((res) => {
-          res.data.forEach(el => $scope.datas.push(el));
-          $scope.paging.currentPos += $scope.paging.perPage;
-          $scope.paging.currentPage++;
-          if ($scope.paging.currentPage > $scope.paging.totalPage) {
-            $scope.paging.hasPaging = false;
-          } else {
-            $scope.paging.hasPaging = true;
-          }
+            if (reset) {
+                $scope.datas = [];
+            }else{
+                $scope.paging.currentPos += $scope.paging.perPage;
+                $scope.paging.currentPage++;
+                if ($scope.paging.currentPage > $scope.paging.totalPage) {
+                    $scope.paging.hasPaging = false;
+                } else {
+                    $scope.paging.hasPaging = true;
+                }
+            }
+            res.data.forEach(el => $scope.datas.push(el));
         })
     }
 
@@ -124,6 +143,30 @@ angular.module('app')
             }
         });
     }
+
+
+    $scope.search = () => {
+        if ($scope.searchKeyword != '') {
+            $http.get('/api/categories?filter={"where":{"name":{"like":"' + $scope.searchKeyword + '","options":"i"}}}')
+            .then((res)=>{
+                if(res.data.length > 0){
+                    if ($scope.datasTemp.length < 1) {
+                      $scope.datasTemp = $scope.datas;
+                    }
+                    $scope.datas = res.data
+                    $scope.searchMsg = "About " + res.data.length + " results";
+                }
+            })
+        }
+
+        if ($scope.searchKeyword == '') {
+            $scope.datas = $scope.datasTemp;
+            $scope.datasTemp = [];
+            $scope.searchMsg = '';
+        }
+
+    };
+
     $scope.formClear = () => {
         $scope.form = {
             id: 0,
