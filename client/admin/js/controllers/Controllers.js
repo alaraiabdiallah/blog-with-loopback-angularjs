@@ -13,7 +13,7 @@ angular.module('app')
     $scope.datasTemp = [];
     $scope.paging = {
         hasPaging: false,
-        perPage: 10,
+        perPage: 2,
         totalData: 0,
         currentPos: 0,
         totalPage: 0,
@@ -24,13 +24,16 @@ angular.module('app')
     $scope.action = '';
     $scope.form = {id: 0,name: '',slug: '',description:''};
     
-    $scope.mainEndpoint =  '/api/categories?filter[limit]=' + $scope.paging.perPage + '&filter[skip]=' + $scope.paging.currentPos;
-    
     let initPaging = () => {
         Category.count().$promise.then(res => {
+            console.log(res.count);
             $scope.paging.totalData = res.count;
             $scope.paging.totalPage = Math.floor(res.count / $scope.paging.perPage);
-            $scope.paging.currentPage++;
+            if ($scope.paging.currentPage > $scope.paging.totalPage) {
+              $scope.paging.hasPaging = false;
+            } else {
+              $scope.paging.hasPaging = true;
+            }
         });
     }
     let store = () => {
@@ -80,8 +83,8 @@ angular.module('app')
     }
 
     $scope.loadData = (reset = false) => {
-      
-      $http.get($scope.mainEndpoint)
+      var endpoint = '/api/categories?filter[limit]=' + $scope.paging.perPage + '&filter[skip]=' + $scope.paging.currentPos;
+      $http.get(endpoint)
         .then((res) => {
             if (reset) {
                 $scope.datas = [];
@@ -89,9 +92,9 @@ angular.module('app')
                 $scope.paging.currentPos += $scope.paging.perPage;
                 $scope.paging.currentPage++;
                 if ($scope.paging.currentPage > $scope.paging.totalPage) {
-                    $scope.paging.hasPaging = false;
+                  $scope.paging.hasPaging = false;
                 } else {
-                    $scope.paging.hasPaging = true;
+                  $scope.paging.hasPaging = true;
                 }
             }
             res.data.forEach(el => $scope.datas.push(el));
@@ -166,6 +169,10 @@ angular.module('app')
         }
 
     };
+
+    $scope.formNameChange = () => {
+        $scope.form.slug = slugify($scope.form.name);
+    }
 
     $scope.formClear = () => {
         $scope.form = {

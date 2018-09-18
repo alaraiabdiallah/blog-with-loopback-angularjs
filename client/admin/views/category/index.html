@@ -52,7 +52,7 @@
         </li>
     </ul>
     <!-- /.box-body -->
-    <div class="box-footer text-center" ng-show="paging.hasPaging && datas.length > 0">
+    <div class="box-footer text-center" ng-show="paging.hasPaging">
       <button class="btn btn-primary" ng-click="loadData()">Load More</button>
     </div>
     <!-- /.box-footer-->
@@ -73,7 +73,7 @@
       <div class="modal-body">
           <div class="form-group">
             <label for="">Name</label>
-            <input type="text" class="form-control" ng-model="form.name">
+            <input type="text" class="form-control" ng-model="form.name" ng-change="formNameChange()">
           </div>
           <div class="form-group">
             <label for="">Slug</label>
