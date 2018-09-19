@@ -29,3 +29,17 @@ a{
 .action-btn{
     margin-top: 10px;
 }
+
+.form-transparent{
+    border: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.list-group {
+  margin: 0;
+}
+
+.list-group-item:hover {
+  background: #eee;
+}

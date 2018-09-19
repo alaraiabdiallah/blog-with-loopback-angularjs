@@ -6,7 +6,9 @@
 angular
   .module('app', [
     'ui.router',
-    'lbServices'
+    'lbServices',
+    'ngCookies',
+    'summernote'
   ])
   .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,
     $urlRouterProvider) {
@@ -24,12 +26,24 @@ angular
         url: '/categories',
         controller: 'CategoryController',
         templateUrl: 'views/category/index.html'
+      })
+      .state('posts', {
+        url: '/posts',
+        controller: 'PostController',
+        templateUrl: 'views/post/index.html'
+      })
+      .state('post-create', {
+        url: '/posts/create',
+        controller: 'PostCreateController',
+        templateUrl: 'views/post/create.html'
+      })
+      .state('post-edit', {
+        url: '/posts/edit/:id',
+        controller: 'PostEditController',
+        templateUrl: 'views/post/edit.html'
       });
     $urlRouterProvider.otherwise('home');
   }])
-
-
-
   .run(['$rootScope', '$state', 'LoopBackAuth', 'AuthService', function ($rootScope, $state, LoopBackAuth, AuthService) {
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
       // redirect to login page if not logged in
@@ -47,7 +61,6 @@ angular
         $state.go('forbidden');
       }
     });
-
 
     // Get data from localstorage after pagerefresh
     // and load user data into rootscope.

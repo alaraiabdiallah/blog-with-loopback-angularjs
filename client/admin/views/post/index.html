@@ -1,0 +1,64 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {{ pageTitle }}
+  </h1>
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="form-group no-margin">
+            <label>Search</label>
+            <input type="text" class="form-control" ng-change="search()" ng-model="searchKeyword">
+            <p class="help-block">{{ searchMsg }}</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group no-margin">
+            <label>Sort By</label>
+            <select class="form-control" ng-model="orderMethod">
+              <option value="-id">Newest</option>
+              <option value="id">Older</option>
+            </select>
+            <p class="help-block"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="action-btn pull-right">
+        <a ui-sref="post-create" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
+      </div>
+    </div>
+    <div class="clearboth"></div>
+  </div>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+  <!-- Default box -->
+  <div class="box">
+    <div class="box-body" ng-show="datas.length < 1">
+      <p class="text-center"><strong>No data</strong></p>
+    </div>
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="data in datas | orderBy:orderMethod">
+        <h3 class="list-title">{{ data.title }}</h3>
+        <div class="list-action">
+          <a href="#/posts/edit/{{data.id}}">Edit</a> |
+          <a ng-click="deleteAction(data.id)">Delete</a>
+        </div>
+      </li>
+    </ul>
+    <!-- /.box-body -->
+    <div class="box-footer text-center" ng-show="paging.hasPaging">
+      <button class="btn btn-primary" ng-click="loadData()">Load More</button>
+    </div>
+    <!-- /.box-footer-->
+  </div>
+  <!-- /.box -->
+
+</section>
+<!-- /.content -->
+

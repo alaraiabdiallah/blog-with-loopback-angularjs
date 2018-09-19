@@ -1,0 +1,53 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {{ pageTitle }}
+  </h1>
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-lg-6">
+        <div class="form-group no-margin">
+            <input type="text" class="form-control form-transparent" ng-model="form.title" ng-change="onTitleChange()" placeholder="Title here..." style="font-size: 2em;">
+        </div>
+        <div class="form-group no-margin" ng-click="onSlugClick()">
+<span>{{baseUrl}}/</span><input type="text" name="slug" class="form-transparent" ng-change="onSlugChange()" ng-model="form.slug"
+  placeholder="slug">
+        </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="action-btn pull-right">
+        <button class="btn btn-success" ng-click="save()"><i class="fa fa-check"></i> Save</button>
+        <button class="btn btn-default" ng-click="publish()"><i class="fa fa-share"></i> {{ published? "Unpublish": "Publish" }}</button>
+      </div>
+    </div>
+    <div class="clearboth"></div>
+  </div>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="box">
+                <summernote ng-model="form.content" height="500" ng-change="onContentChange()"></summernote>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Category</h3>
+                </div>
+                <ul class="list-group" style="height: 150px; overflow-y:auto;cursor: pointer;">
+                    <li class="list-group-item" style="padding: 5px 10px;" ng-repeat="category in categories | filter: searchCategory" 
+                        >
+                        <input type="checkbox" ng-click="onSelectCategory(category.id)" ng-checked="isSelected(selectedCategory,category.id)" value="{{category.id}}">
+                        {{ category.name }}
+                    </li>
+                </ul>
+                <div class="box-footer">
+                    <input type="text" class="form-control" placeholder="Search category..." ng-model="searchCategory">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
