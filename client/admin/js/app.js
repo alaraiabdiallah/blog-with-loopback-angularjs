@@ -6,6 +6,8 @@
 angular
   .module('app', [
     'ui.router',
+    'ui.grid', 
+    'ui.grid.pagination',
     'lbServices',
     'ngCookies',
     'summernote'
@@ -44,7 +46,7 @@ angular
       });
     $urlRouterProvider.otherwise('home');
   }])
-  .run(['$rootScope', '$state', 'LoopBackAuth', 'AuthService', function ($rootScope, $state, LoopBackAuth, AuthService) {
+  .run(['$rootScope', '$state', 'LoopBackAuth', 'AuthService', 'ModelBuilder', function ($rootScope, $state, LoopBackAuth, AuthService, ModelBuilder) {
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
       // redirect to login page if not logged in
       if (toState.authenticate && !LoopBackAuth.accessTokenId) {
@@ -61,6 +63,8 @@ angular
         $state.go('forbidden');
       }
     });
+
+    ModelBuilder.build();
 
     // Get data from localstorage after pagerefresh
     // and load user data into rootscope.

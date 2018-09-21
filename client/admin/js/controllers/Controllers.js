@@ -3,123 +3,72 @@ angular.module('app')
 
 }])
 
-.controller('CategoryController', ['$scope','$http','Category', ($scope,$http, Category) => {
+.controller('CategoryController', ['$scope','$http','Category', 'CategoryService', ($scope,$http, Category, CategoryService) => {
     var modalContext = $('#categoryModal');
     $scope.pageTitle = "Categories";
-    $scope.datas = [];
-    $scope.searchKeyword = '';
-    $scope.searchMsg = '';
-    $scope.datasTemp = [];
-    $scope.paging = {
-        hasPaging: false,
-        perPage: 10,
-        totalData: 0,
-        currentPos: 0,
-        totalPage: 0,
-        currentPage: 0
-    }
-    $scope.orderMethod = '-id';
-    $scope.actionTitle = '';
-    $scope.action = '';
-    $scope.form = {id: 0,name: '',slug: '',description:''};
     
-    let initPaging = () => {
-        Category.count().$promise.then(res => {
-            $scope.paging.totalData = res.count;
-            $scope.paging.totalPage = Math.floor(res.count / $scope.paging.perPage);
-            if ($scope.paging.currentPage > $scope.paging.totalPage) {
-              $scope.paging.hasPaging = false;
-            } else {
-              $scope.paging.hasPaging = true;
-            }
-        });
+    let fillForm = (data) => {
+      $scope.form.id = data.id;
+      $scope.form.name = data.name;
+      $scope.form.slug = data.slug;
+      $scope.form.description = data.description;
     }
 
-    let onLoadData = (res) => {
-      $scope.paging.currentPos += $scope.paging.perPage;
-      $scope.paging.currentPage++;
-      if ($scope.paging.currentPage > $scope.paging.totalPage) {
-        $scope.paging.hasPaging = false;
-      } else {
-        $scope.paging.hasPaging = true;
-      }
-      res.forEach(el => $scope.datas.push(el));
+    let formClear = () => {
+      $scope.form = {
+        id: 0,
+        name: '',
+        slug: '',
+        description: ''
+      };
     }
 
     let store = () => {
       data = $scope.form;
       delete data.id;
-      Category.create(data).$promise
-        .then((data) => {
-          $scope.datas.push(data);
-          toastr.success('Success to store data');
-        })
-      $scope.formClear();
+      CategoryService.insert(data);
     }
 
     let update = () => {
-      Category.prototype$updateAttributes($scope.form).$promise.then(() => {
-        categoryIndex = $scope.datas.findIndex((obj => obj.id == $scope.form.id));
-        $scope.datas[categoryIndex] = $scope.form;
-        toastr.success('Success to edit data');
-      });
+      CategoryService.update($scope.form);
     }
 
-    let findOne = (id) => {
-      Category.findById({
-        id: id
-      }).$promise.then((data) => {
-        $scope.form.id = data.id;
-        $scope.form.name = data.name;
-        $scope.form.slug = data.slug;
-        $scope.form.description = data.description;
-      })
-    }
-
-    let pagingReset = () =>{
-        $scope.paging = {
-          hasPaging: false,
-          perPage: 10,
-          totalData: 0,
-          currentPos: 0,
-          totalPage: 0,
-          currentPage: 0
-        }
-    }
-
-    $scope.init = () => {
-        initPaging();
-        $scope.loadData();
+    let setAction = (action) => {
+      $scope.action = action;
+      if (action == 'create') 
+        $scope.actionTitle = 'Add new category';
+      if (action == 'edit')
+        $scope.actionTitle = 'Edit category';
     }
 
     $scope.loadData = () => {
-      let filter = {
-        skip: $scope.paging.currentPos,
-        limit: $scope.paging.perPage,
-        order: 'id DESC'
-      };
-      Category.find({filter : filter},onLoadData);
+      formClear();
+      CategoryService.init();
+      $scope.gridOptions = CategoryService.grid;
+      $scope.gridOptions.onRegisterApi = (gridApi) => {
+        $scope.gridApi = gridApi;
+        $scope.gridApi.grid.registerRowsProcessor($scope.singleFilter, 200);
+      }
     }
 
     $scope.create = () => {
-        $scope.action = 'create';
-        $scope.actionTitle = 'Add new category';
-        $scope.formClear();
+        setAction('create');
+        formClear();
         modalContext.modal('show');
     }
 
     $scope.edit = (id) => {
-        $scope.action = 'edit';
-        $scope.actionTitle = 'Edit category';
-        $scope.formClear();
-        findOne(id);
+        setAction('edit');
+        formClear();
+        let category = CategoryService.findById(id);
+        fillForm(category);
         modalContext.modal('show');
     }
 
     $scope.save = () => {
-        let action = $scope.action;
-        if (action == 'create') store();
-        if (action == 'edit') update();
+      let action = $scope.action;
+      if (action == 'create') store();
+      if (action == 'edit') update();
     }
     
     $scope.saveAndClose = () => {
@@ -137,53 +86,34 @@ angular.module('app')
         })
         .then((willDelete) => {
             if (willDelete) {
-                Category.deleteById({id: id}).$promise.then(() => {
-                    $scope.datas = $scope.datas.filter((item, i) => {
-                        return item.id != id
-                    });
-                    toastr.success('Success to delete data');
-                }) 
+                CategoryService.deleteData(id);
             }
         });
     }
 
+    $scope.singleFilter = (renderableRows) => {
+        var matcher = new RegExp($scope.searchKeyword);
+        var filterCol = ['name', 'slug', 'createdAt'];
+        renderableRows.forEach( (row) => {
+          var match = false;
+          filterCol.forEach((field) => {
+            if (row.entity[field].match(matcher))
+              match = true;
+          });
+          if (!match) row.visible = false;
+        });
+        return renderableRows;
+    };
 
-    $scope.search = () => {
-        if ($scope.searchKeyword != '') {
-            $http.get('/api/categories?filter={"where":{"name":{"like":"' + $scope.searchKeyword + '","options":"i"}}}')
-            .then((res)=>{
-                if(res.data.length > 0){
-                    if ($scope.datasTemp.length < 1) {
-                      $scope.datasTemp = $scope.datas;
-                    }
-                    $scope.datas = res.data
-                    $scope.searchMsg = "About " + res.data.length + " results";
-                }
-            })
-        }
-
-        if ($scope.searchKeyword == '') {
-            $scope.datas = $scope.datasTemp;
-            $scope.datasTemp = [];
-            $scope.searchMsg = '';
-        }
-
+    $scope.searchAction = () => {
+      $scope.gridApi.grid.refresh();
     };
 
     $scope.onNameChange = () => {
         $scope.form.slug = slugify($scope.form.name);
     }
 
-    $scope.formClear = () => {
-        $scope.form = {
-            id: 0,
-            name: '',
-            slug: '',
-            description: ''
-        };
-    }
-
-    $scope.init();
+    $scope.loadData();
 }])
 .controller('PostController', ['$scope', '$http', 'Post', ($scope, $http, Post) => {
   var modalContext = $('#postModal');
