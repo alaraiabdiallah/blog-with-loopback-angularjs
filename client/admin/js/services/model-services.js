@@ -17,15 +17,17 @@ angular
         { name: 'publishedAt' },
         {
           name: 'Action',
-          cellTemplate: '<div class="text-center"><button class="btn btn-primary btn-xs" ng-click="grid.appScope.edit(row.entity.id)">Edit</button> ' +
-          '<button class="btn btn-danger btn-xs" ng-click="grid.appScope.deleteAction(row.entity.id)">Delete</button></div>',
+          cellTemplate: '<div class="text-center"><button class="btn btn-primary btn-xs" ng-click="grid.appScope.edit(row.entity.id)"><i class="fa fa-pencil"></i></button> ' +
+          '<button class="btn btn-danger btn-xs" ng-click="grid.appScope.deleteAction(row.entity.id)"><i class="fa fa-trash-o"></i></button></div>',
           enableSorting: false
         }
       ]
     };
 
+    var tableName = "categories";
+
     function buildModel(){
-        let query = "CREATE TABLE categories (id INT, name string, slug string, description string, createdAt DATETIME, modifiedAt DATETIME)";
+        let query = "CREATE TABLE "+tableName+" (id INT, name string, slug string, description string, createdAt DATETIME, modifiedAt DATETIME)";
         alasql(query);
     }
 
@@ -40,14 +42,14 @@ angular
     }
 
     function findById(id){
-        let sql = "SELECT * FROM categories WHERE id = ?";
+        let sql = "SELECT * FROM " + tableName + " WHERE id = ?";
         let query = alasql(sql, [id]);
         return query.length > 0 ? query[0] : [];
     }
 
     function update(data) {
         Model.prototype$updateAttributes(data,function(data){
-            alasql("DELETE FROM categories WHERE id = ? ;", [data.id]);
+            alasql("DELETE FROM " + tableName + " WHERE id = ? ;", [data.id]);
             pushData(data);
             reloadGrid();
             toastr.success('Success to edit data');
@@ -65,16 +67,16 @@ angular
     }
 
     function pushData(data){
-        alasql.tables.categories.data.push(data);
+        alasql.tables[tableName].data.push(data);
     }
 
     function onLoadData(data){
         alasql.tables.categories.data = data;
-        grid.data = alasql("SELECT * FROM categories ORDER BY id DESC");
+        grid.data = alasql("SELECT * FROM " + tableName + " ORDER BY id DESC");
     }
 
     function reloadGrid(){
-        let datas = alasql("SELECT * FROM categories ORDER BY id DESC");
+        let datas = alasql("SELECT * FROM " + tableName + " ORDER BY id DESC");
         grid.data = datas;
     }
 
