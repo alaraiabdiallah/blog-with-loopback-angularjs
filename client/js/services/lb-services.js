@@ -2128,6 +2128,39 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' &&
 
             /**
              * @ngdoc method
+             * @name lbServices.Category#MultipleDelete
+             * @methodOf lbServices.Category
+             *
+             * @description
+             *
+             * delete multiple data using an array of ids
+             *
+             * @param {Object=} parameters Request parameters.
+             *
+             *  - `id` – `{*}` -
+             *
+             * @param {function(Object,Object)=} successCb
+             *   Success callback with two arguments: `value`, `responseHeaders`.
+             *
+             * @param {function(Object)=} errorCb Error callback with one argument:
+             *   `httpResponse`.
+             *
+             * @returns {Object} An empty reference that will be
+             *   populated with the actual data once the response is returned
+             *   from the server.
+             *
+             * <em>
+             * (The remote method definition does not provide any description.
+             * This usually means the response is a `Category` object.)
+             * </em>
+             */
+            "MultipleDelete": {
+              url: urlBase + "/categories/delete",
+              method: "DELETE",
+            },
+
+            /**
+             * @ngdoc method
              * @name lbServices.Category#createMany
              * @methodOf lbServices.Category
              *

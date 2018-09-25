@@ -60,10 +60,18 @@ angular
         Model.deleteById({
           id: id
         }).$promise.then(() => {
-          alasql("DELETE FROM categories WHERE id = ? ;", [id]);
+          alasql("DELETE FROM "+tableName+" WHERE id = ? ;", [id]);
           reloadGrid();
           toastr.success('Success to delete data');
         })
+    }
+
+    function deleteMultiple(ids){
+        Model.MultipleDelete({id:ids},() => {
+            alasql("DELETE FROM " + tableName + " WHERE id IN(" + ids.join() + ")");
+            toastr.success('Success to delete '+ ids.length + ' data');
+            reloadGrid();
+        }, () => toastr.error('Failed to delete data'));
     }
 
     function pushData(data){
@@ -92,7 +100,8 @@ angular
       reloadGrid: reloadGrid,
       deleteData: deleteData,
       findById: findById,
-      update:update
+      update:update,
+      deleteMultiple : deleteMultiple
     };
   }])
   .factory('ModelBuilder', ['CategoryService','$q', '$rootScope', '$state', function (

@@ -6,6 +6,8 @@ angular.module('app')
 .controller('CategoryController', ['$scope','$http','Category', 'CategoryService', ($scope,$http, Category, CategoryService) => {
     var modalContext = $('#categoryModal');
     $scope.pageTitle = "Categories";
+
+    $scope.selectedIds = [];
     
     let fillForm = (data) => {
       $scope.form.id = data.id;
@@ -27,6 +29,7 @@ angular.module('app')
       data = $scope.form;
       delete data.id;
       CategoryService.insert(data);
+      formClear();
     }
 
     let update = () => {
@@ -41,13 +44,28 @@ angular.module('app')
         $scope.actionTitle = 'Edit category';
     }
 
+    let onRowSelected = () => {
+      var selected = $scope.gridApi.selection.getSelectedRows();
+      var selectedIds = [];
+      selected.forEach(val => selectedIds.push(val.id) );
+      $scope.selectedIds = selectedIds;
+    }
+
     $scope.loadData = () => {
       formClear();
       CategoryService.init();
       $scope.gridOptions = CategoryService.grid;
       $scope.gridOptions.onRegisterApi = (gridApi) => {
         $scope.gridApi = gridApi;
+
         $scope.gridApi.grid.registerRowsProcessor($scope.singleFilter, 200);
+
+        gridApi.selection.on.rowSelectionChanged($scope, function (row) {
+          onRowSelected();
+        });
+        gridApi.selection.on.rowSelectionChangedBatch($scope, (rows) => {
+          onRowSelected();
+        })
       }
     }
 
@@ -56,6 +74,7 @@ angular.module('app')
         formClear();
         modalContext.modal('show');
     }
+
 
     $scope.edit = (id) => {
         setAction('edit');
@@ -88,6 +107,24 @@ angular.module('app')
             if (willDelete) {
                 CategoryService.deleteData(id);
             }
+        });
+    }
+
+    $scope.deleteMultiple = () => {
+      swal({
+          title: "Are you sure?",
+          text: "Once deleted, you will not be able to recover this data!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            let ids = $scope.selectedIds; 
+            CategoryService.deleteMultiple(ids);
+            $scope.selectedIds = [];
+            $scope.gridApi.selection.clearSelectedRows();
+          }
         });
     }
 

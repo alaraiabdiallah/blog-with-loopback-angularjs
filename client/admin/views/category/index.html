@@ -15,6 +15,8 @@
         <div class="col-lg-6">
           <div class="action-btn" style="margin-top: 25px;">
               <button class="btn btn-primary" ng-click="create()"><i class="fa fa-plus"></i> Add new</button>
+              <button class="btn btn-danger" ng-show="selectedIds.length > 0" ng-click="deleteMultiple()"><i class="fa fa-trash-o"></i>
+              Bulk Delete</button>
           </div>
         </div>
       </div>
@@ -29,7 +31,7 @@
   <!-- Default box -->
   <div class="box">
     <div class="box-body no-padding">
-        <div ui-grid="gridOptions" ui-grid-pagination class="grid"></div>
+      <div ui-grid="gridOptions" ui-grid-pagination ui-grid-selection ui-grid-cellnav class="grid"></div>
     </div>
   </div>
   <!-- /.box -->

@@ -9,6 +9,8 @@ angular
     'ui.grid', 
     'ui.grid.pagination',
     'lbServices',
+    'ui.grid.selection',
+    'ui.grid.cellNav',
     'ngCookies',
     'summernote'
   ])

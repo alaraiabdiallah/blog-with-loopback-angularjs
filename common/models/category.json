@@ -34,5 +34,8 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {},
+  "mixins": {
+    "MultipleDelete": true
+  }
 }
