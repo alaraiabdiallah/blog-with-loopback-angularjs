@@ -3,9 +3,10 @@ angular.module('app')
 
 }])
 
-.controller('CategoryController', ['$scope','$http','Category', 'CategoryService', ($scope,$http, Category, CategoryService) => {
+.controller('CategoryController', ['$scope','$http','Category', 'CategoryService','FileUploader', ($scope,$http, Category, CategoryService,FileUploader) => {
     var modalContext = $('#categoryModal');
     $scope.pageTitle = "Categories";
+    var apiBaseUrl = location.protocol+'//'+location.host+"/api";
 
     $scope.selectedIds = [];
     
@@ -149,6 +150,40 @@ angular.module('app')
     $scope.onNameChange = () => {
         $scope.form.slug = slugify($scope.form.name);
     }
+
+    $scope.exportData = () => {
+      alasql.promise('SELECT id,name,slug,description INTO xlsx("categories_export.xlsx",{headers:true}) FROM categories')
+      .then((data) => console.log("Data Saved"))
+      .catch((err) => console.log(err));
+    }
+
+    // $scope.uploader = new FileUploader({
+    //   url: apiBaseUrl +'/containers/common/upload',
+    // });
+
+    // $scope.uploader.onAfterAddingFile = (item) => {
+    //   let type = [
+    //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    //     "application/vnd.ms-excel",
+    //   ]; 
+    //   if (!inArray(type, item.file.type)){
+    //     toastr.error('File extension not valid only supported xls, xlsx extension');
+    //     return false;
+    //   }
+
+    //   item.upload();
+    // }
+    
+    // $scope.uploader.onSuccessItem = (item, response, status, headers) => {
+    //   file = response.result.files.file[0];
+    //   filePath = apiBaseUrl + '/containers/'+file.container+'/download/'+file.name;
+    //    alasql.promise('select * from xlsx("' + filePath + '",{headers:true})')
+    //      .then(function (data) {
+    //        console.log(data);
+    //      }).catch(function (err) {
+    //        console.log('Error:', err);
+    //      });
+    // }
 
     $scope.loadData();
 }])

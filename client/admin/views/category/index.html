@@ -16,10 +16,21 @@
           <div class="action-btn" style="margin-top: 25px;">
               <button class="btn btn-primary" ng-click="create()"><i class="fa fa-plus"></i> Add new</button>
               <button class="btn btn-danger" ng-show="selectedIds.length > 0" ng-click="deleteMultiple()"><i class="fa fa-trash-o"></i>
-              Bulk Delete</button>
+                Bulk Delete</button>
           </div>
         </div>
       </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="action-btn pull-right">
+          <button class="btn btn-default" ng-click="exportData()"><i class="fa fa-file"></i> Export to Excel</button>
+          <!-- <button class="btn btn-info btn-file"><i class="fa fa-file"></i> 
+            Import
+            <input type="file" nv-file-select uploader="uploader" />
+          </button> -->
+          
+          
+        </div>
     </div>
     <div class="clearboth"></div>
   </div>

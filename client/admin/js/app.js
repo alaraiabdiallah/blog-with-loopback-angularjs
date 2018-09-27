@@ -11,6 +11,7 @@ angular
     'lbServices',
     'ui.grid.selection',
     'ui.grid.cellNav',
+    'angularFileUpload',
     'ngCookies',
     'summernote'
   ])

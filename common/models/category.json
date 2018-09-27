@@ -6,6 +6,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "MultipleDelete": true
+  },
   "properties": {
     "slug": {
       "type": "string",
@@ -18,7 +21,7 @@
     "description": {
       "type": "string"
     },
-    "createdAt":{
+    "createdAt": {
       "type": "date"
     },
     "modifiedAt": {
@@ -34,8 +37,5 @@
     }
   },
   "acls": [],
-  "methods": {},
-  "mixins": {
-    "MultipleDelete": true
-  }
+  "methods": {}
 }
